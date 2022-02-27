@@ -1,0 +1,12 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends:
+  - airbnb
+rules:
+  quotes: [1, "double", { "avoidEscape": true }]
+  comma-dangle: [2, "always-multiline"]
+  react/jsx-filename-extension: 0
+  react/react-in-jsx-scope: 0
+  react/jsx-one-expression-per-line: 0
