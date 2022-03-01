@@ -56,7 +56,7 @@ export default class Road extends Phaser.GameObjects.Container {
     if (lane < 50) {
       this.object.x = this.displayWidth / 4;
     }
-    console.log(scale);
+
     Align.scaleToGameW(this.config, this.object, scale);
     this.add(this.object);
   }

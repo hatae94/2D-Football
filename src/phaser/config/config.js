@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import SceneMain from "../scenes/SceneMain";
+import Preloader from "../scenes/PreloadScene";
 
 let config = {};
 let isMobile = window.navigator.userAgent.indexOf("Mobile");
@@ -29,18 +30,18 @@ if (isMobile === -1) {
     type: Phaser.AUTO,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 414,
-    height: 896,
+    width: window.innerWidth,
+    height: window.innerHeight,
     pixelArt: true,
-    zoom: 1.8,
+    zoom: 1,
     backgroundColor: "#5a8f3c",
     physics: {
       default: "arcade",
       arcade: {
-        debug: false,
+        debug: true,
       },
     },
-    scene: [SceneMain],
+    scene: [Preloader, SceneMain],
   };
 }
 
