@@ -1,7 +1,8 @@
+import Phaser from "phaser";
+
 export default class Align {
-  static scaleToGameW(canvas, object, per) {
-    object.scaleX = canvas.width * per;
-    object.scaleY = object.scaleX;
+  static scaleToGameW(canvas, object) {
+    object.setOrigin(0);
   }
 
   static center(canvas, object) {

@@ -6,14 +6,10 @@ function App() {
   useEffect(() => {
     const game = new Phaser.Game(config);
 
-    game.events.on("start", () => {
-      console.log("start");
-    });
-
     return () => {
       game.destroy();
     };
-  });
+  }, []);
   return <div id="container" />;
 }
 
