@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import createBallAnimations from "../animations/ball";
 
 import createPlayer1Animations from "../animations/player1";
 import createPlayer2Animations from "../animations/player2";
@@ -19,6 +20,7 @@ export default class Preloader extends Phaser.Scene {
   create() {
     createPlayer1Animations(this.anims);
     createPlayer2Animations(this.anims);
+    createBallAnimations(this.anims);
   }
 
   loadGroundImage() {
@@ -30,7 +32,7 @@ export default class Preloader extends Phaser.Scene {
   loadBallImage() {
     this.load.image("ballStopped", "ball_stopped.png");
     this.load.spritesheet("ballMoving", "ball_moving.png", {
-      frameWidth: 5,
+      frameWidth: 3,
       frameHeight: 2,
     });
   }
