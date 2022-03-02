@@ -6,7 +6,6 @@ export default function createPlayer1Animations(animation) {
       start: 0,
       end: 3,
     }),
-    suffix: ".png",
     repeat: Infinity,
   });
 
