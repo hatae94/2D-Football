@@ -10,10 +10,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
     this.body = scene.physics.add.sprite(x, y, `${this.texureName}Stand`);
 
+    scene.alignGrid.placeAtIndex(7, this.body);
+
     this.body.scale = 3;
     this.body.hasBall = false;
-
-    this.body.direction = null;
+    this.body.direction = "";
   }
 
   canHaveBall(ball) {

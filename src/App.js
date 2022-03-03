@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { useEffect } from "react";
+import styled from "styled-components";
 import config from "./phaser/config/config";
 
 function App() {

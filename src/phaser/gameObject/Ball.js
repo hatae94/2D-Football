@@ -6,6 +6,8 @@ export default class Ball extends Phaser.GameObjects.Sprite {
 
     this.body = scene.physics.add.sprite(x, y, "ballMoving");
     this.body.scale = 3;
+
+    scene.alignGrid.placeAt(2, 1.5, this.body);
   }
 
   move() {
