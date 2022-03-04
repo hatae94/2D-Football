@@ -1,7 +1,15 @@
 import Phaser from "phaser";
+
+import {
+  countPlayer1Goal,
+  pauseGame,
+  restartGame,
+} from "../../redux/slice/gameResultSlices";
+import store from "../../redux/store";
+
 import Ground from "../classes/Ground";
-import Ball from "../gameObject/Ball";
-import Player from "../gameObject/Player";
+import Ball from "../objects/Ball";
+import Player from "../objects/Player";
 import AlignGrid from "../classes/util/AlignGrid";
 
 export default class SceneMain extends Phaser.Scene {
@@ -24,18 +32,31 @@ export default class SceneMain extends Phaser.Scene {
       this.sys.canvas.height / 2,
       this.sys.canvas,
     );
+    this.createGround();
+
+    this.createGoalpost(this.ground.background);
 
     this.createBall();
 
-    this.createGround();
-
     this.createPlayer();
-
-    this.createGoalpost(this.ground.background);
 
     this.createZoneGround(this.player1, this.ball);
 
     this.createZoneGoalpost(this.player1, this.ball);
+
+    this.createGameOverText();
+  }
+
+  update() {
+    this.player1.handleMovement(this.joyStick.angle, this.joyStick.force);
+  }
+
+  createGameOverText() {
+    this.gameOverText = this.add.text(200, 300, "Goal!", { fontSize: "3rem" });
+
+    this.alignGrid.placeAt(1.25, 0.5, this.gameOverText);
+
+    this.gameOverText.visible = false;
   }
 
   createZoneGoalpost(player, ball) {
@@ -119,6 +140,55 @@ export default class SceneMain extends Phaser.Scene {
     this.ball = new Ball(this, this.centerX, this.centerY - 0);
     this.ball.body.setBounce(0.2, 0.2);
     this.ball.body.setCollideWorldBounds(true);
+
+    [this.goalpostUp, this.goalpostDown].forEach((goalpost) => {
+      this.physics.add.overlap(
+        this.ball.body,
+        goalpost,
+        this.HandleGoalCount,
+        this.checkIsBallIn(this.ball),
+        this,
+      );
+    });
+  }
+
+  setToStartPosition(player) {
+    if (!player) {
+      this.alignGrid.placeAt(2, 1.5, this.ball.body);
+      return;
+    }
+
+    this.alignGrid.placeAtIndex(7, player);
+    this.alignGrid.placeAt(2, 1.5, this.ball.body);
+  }
+
+  HandleGoalCount(ball, goalpost) {
+    ball.setVelocity(0, 0);
+
+    if (!ball.possession) {
+      this.setToStartPosition();
+    }
+
+    store.dispatch(countPlayer1Goal());
+    store.dispatch(pauseGame());
+    this.gameOverText.visible = true;
+    this.physics.pause();
+
+    setTimeout(() => {
+      store.dispatch(restartGame());
+      this.physics.resume();
+      this.gameOverText.visible = false;
+    }, 1000);
+  }
+
+  checkIsBallIn(ball) {
+    return (_, goalpost) => {
+      if (!ball) {
+        return false;
+      }
+
+      return ball.isInGoalpost(goalpost);
+    };
   }
 
   createGround() {
@@ -129,6 +199,7 @@ export default class SceneMain extends Phaser.Scene {
   setGrid() {
     const gridConfig = { row: 5, col: 5, scene: this };
     this.alignGrid = new AlignGrid(gridConfig);
+    this.alignGrid.showNumbers();
   }
 
   createGoalpost(background) {
@@ -148,7 +219,11 @@ export default class SceneMain extends Phaser.Scene {
     ];
 
     goalposts.forEach((goalpost) => {
-      this[goalpost.key] = this.add.image(goalpost.x, goalpost.y, goalpost.key);
+      this[goalpost.key] = this.physics.add.image(
+        goalpost.x,
+        goalpost.y,
+        goalpost.key,
+      );
       this[goalpost.key].scale = goalpost.scale;
       this[goalpost.key].depth = 1;
     });
@@ -173,13 +248,12 @@ export default class SceneMain extends Phaser.Scene {
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
         const player = this.player1.body;
-
-        if (!player.hasBall) {
-          return;
-        }
-
         const { direction } = this.player1.body;
         const ball = this.ball.body;
+
+        if (!ball.possession) {
+          return;
+        }
 
         switch (direction) {
           case "right":
@@ -273,7 +347,7 @@ export default class SceneMain extends Phaser.Scene {
             }, 1000);
         }
 
-        player.hasBall = false;
+        ball.possession = false;
       });
 
     this.alignGrid.placeAt(3.5, 3.5, this.joyStick);
@@ -296,7 +370,15 @@ export default class SceneMain extends Phaser.Scene {
   handlePlayerDribbleBall(player, ball) {
     this.ball.move();
 
-    player.hasBall = true;
+    const distanceFromGoalpostUp = this.goalpostUp.y - ball.y;
+    const distanceFromGoalpostDown = this.goalpostDown.y - ball.y;
+
+    if (distanceFromGoalpostUp > 0 || distanceFromGoalpostDown < 0) {
+      this.setToStartPosition(player.body);
+      return;
+    }
+
+    ball.possession = true;
 
     const { direction } = player;
 
@@ -341,16 +423,12 @@ export default class SceneMain extends Phaser.Scene {
   }
 
   checkHasBall(player) {
-    return (ball) => {
+    return (_, ball) => {
       if (!player) {
         return false;
       }
 
       return player.canHaveBall(ball);
     };
-  }
-
-  update() {
-    this.player1.handleMovement(this.joyStick.angle, this.joyStick.force);
   }
 }

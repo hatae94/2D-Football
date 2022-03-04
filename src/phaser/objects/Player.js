@@ -13,7 +13,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     scene.alignGrid.placeAtIndex(7, this.body);
 
     this.body.scale = 3;
-    this.body.hasBall = false;
+
     this.body.direction = "";
   }
 
@@ -21,10 +21,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     const playerPosition = this.body.body.position;
     const ballPostion = ball.body.position;
 
-    return (
-      Phaser.Math.Distance.BetweenPointsSquared(playerPosition, ballPostion) <
-      10
-    );
+    return Phaser.Math.Distance.BetweenPoints(playerPosition, ballPostion) < 25;
   }
 
   handleMovement(angle, force) {
