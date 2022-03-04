@@ -1,17 +1,10 @@
-import Phaser from "phaser";
-import { useEffect } from "react";
-import styled from "styled-components";
-import config from "./phaser/config/config";
+import { useSelector } from "react-redux";
+import GameBox from "./components/Game";
 
 function App() {
-  useEffect(() => {
-    const game = new Phaser.Game(config);
-
-    return () => {
-      game.destroy();
-    };
-  }, []);
-  return <div id="container" />;
+  const socore = useSelector((state) => state.gameResult.player1Score);
+  console.log(socore);
+  return <GameBox />;
 }
 
 export default App;
