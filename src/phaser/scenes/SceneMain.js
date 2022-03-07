@@ -11,6 +11,7 @@ import Ground from "../classes/Ground";
 import Ball from "../objects/Ball";
 import Player from "../objects/Player";
 import AlignGrid from "../classes/util/AlignGrid";
+import socket from "../../utils/socket";
 
 export default class SceneMain extends Phaser.Scene {
   constructor() {
@@ -36,19 +37,124 @@ export default class SceneMain extends Phaser.Scene {
 
     this.createGoalpost(this.ground.background);
 
-    this.createBall();
+    socket.emit("newPlayer");
 
-    this.createPlayer();
+    const clientPlayers = {};
+    const playersFound = {};
+    const clientBalls = {};
 
-    this.createZoneGround(this.player1, this.ball);
+    socket.on("loadPlayer", (players) => {
+      for (const id in players) {
+        if (!clientPlayers[id] && id !== socket.id) {
+          if (!players[id]) {
+            clientPlayers[id] = new Player(this, 0, 0, "player1");
+          } else {
+            clientPlayers[id] = new Player(this, 0, 0, "player2");
+          }
 
-    this.createZoneGoalpost(this.player1, this.ball);
+          this.otherPlayer = clientPlayers[id];
+          this.otherPlayer.id = id;
+          this.otherPlayer.body.id = id;
+
+          playersFound[id] = true;
+        }
+
+        if (!clientPlayers[id] && id === socket.id) {
+          if (!players[id]) {
+            clientPlayers[id] = new Player(this, 0, 0, "player1");
+          } else {
+            clientPlayers[id] = new Player(this, 0, 0, "player2");
+          }
+
+          this.player = clientPlayers[id];
+          this.player.id = id;
+          this.player.body.id = id;
+
+          playersFound[id] = true;
+        }
+      }
+
+      for (const id in clientPlayers) {
+        if (!playersFound[id]) {
+          clientPlayers[id].destroy();
+          delete playersFound[id];
+          delete clientPlayers[id];
+        }
+      }
+
+      if (this.otherPlayer) {
+        this.createBall(this.player.id, this.otherPlayer.id, clientBalls);
+
+        this.setOverlapToBall(this.player);
+
+        this.createZoneGround(this.player, this.ball);
+
+        this.createZoneGoalpost(this.player, this.ball);
+
+        this.ballOriginPosition = {
+          x: this.ball.body.x,
+          y: this.ball.body.y,
+        };
+      }
+
+      this.playerOriginPosition = {
+        x: this.player.body.x,
+        y: this.player.body.y,
+      };
+    });
+
+    socket.on("otherPlayerMove", ({
+      x, y, anims, id, serverTime,
+    }) => {
+      if (this.otherPlayer && this.otherPlayer.id === id) {
+        this.otherPlayer.body.x = x;
+        this.otherPlayer.body.y = y;
+
+        this.otherPlayer.body.anims.play(anims, true);
+      }
+    });
+
+    socket.on("ballMove", ({
+      x, y, id, possession, serverTime,
+    }) => {
+      if (this.ball) {
+        this.ball.body.possession = possession;
+
+        this.ball.body.x = x;
+        this.ball.body.y = y;
+
+        this.ballOriginPosition.x = x;
+        this.ballOriginPosition.y = y;
+      }
+    });
 
     this.createGameOverText();
   }
 
   update() {
-    this.player1.handleMovement(this.joyStick.angle, this.joyStick.force);
+    if (!this.player || !this.ball) {
+      return;
+    }
+
+    this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
+
+    if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
+      socket.emit("movePlayer", {
+        x: this.player.body.x,
+        y: this.player.body.y,
+        anims: this.player.body.anims.currentAnim.key,
+        time: new Date(),
+      });
+    }
+
+    if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
+      socket.emit("moveBall", {
+        x: this.ball.body.x,
+        y: this.ball.body.y,
+        possession: this.ball.body.possession,
+        time: new Date(),
+      });
+    }
   }
 
   createGameOverText() {
@@ -136,8 +242,17 @@ export default class SceneMain extends Phaser.Scene {
     this.physics.add.collider(ball.body, zone);
   }
 
-  createBall() {
-    this.ball = new Ball(this, this.centerX, this.centerY - 0);
+  createBall(playerId, otherPlayerId, clientBalls) {
+    const matchBallId = playerId + otherPlayerId;
+
+    if (clientBalls[matchBallId]) {
+      return;
+    }
+
+    this.ball = new Ball(this, this.centerX, this.centerY);
+    // this.ball = clientBalls[matchBallId];
+    // this.ball.id = matchBallId;
+
     this.ball.body.setBounce(0.2, 0.2);
     this.ball.body.setCollideWorldBounds(true);
 
@@ -152,22 +267,22 @@ export default class SceneMain extends Phaser.Scene {
     });
   }
 
-  setToStartPosition(player) {
-    if (!player) {
-      this.alignGrid.placeAt(2, 1.5, this.ball.body);
-      return;
-    }
+  setToStartPosition(player, otherPlayer, ball) {
+    ball.body.possession = "";
 
-    this.alignGrid.placeAtIndex(7, player);
-    this.alignGrid.placeAt(2, 1.5, this.ball.body);
+    this.alignGrid.placeAtIndex(player.body.gridPosition, player.body);
+    this.alignGrid.placeAtIndex(otherPlayer.body.gridPosition, otherPlayer.body);
+    this.alignGrid.placeAt(2, 1.5, ball.body);
+
+    socket.emit("movePlayer", {
+      x: this.player.body.x,
+      y: this.player.body.y,
+      anims: this.player.body.anims.currentAnim.key,
+    });
   }
 
   HandleGoalCount(ball, goalpost) {
     ball.setVelocity(0, 0);
-
-    if (!ball.possession) {
-      this.setToStartPosition();
-    }
 
     store.dispatch(countPlayer1Goal());
     store.dispatch(pauseGame());
@@ -178,6 +293,8 @@ export default class SceneMain extends Phaser.Scene {
       store.dispatch(restartGame());
       this.physics.resume();
       this.gameOverText.visible = false;
+
+      this.setToStartPosition(this.player, this.otherPlayer, this.ball);
     }, 1000);
   }
 
@@ -247,8 +364,8 @@ export default class SceneMain extends Phaser.Scene {
       )
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        const player = this.player1.body;
-        const { direction } = this.player1.body;
+        const player = this.player.body;
+        const { direction } = this.player.body;
         const ball = this.ball.body;
 
         if (!ball.possession) {
@@ -341,23 +458,28 @@ export default class SceneMain extends Phaser.Scene {
             ball.y = player.y + player.height * 2;
 
             ball.setVelocityY(100);
+
             setTimeout(() => {
               ball.setVelocityY(0);
               ball.stop();
             }, 1000);
         }
 
-        ball.possession = false;
+        ball.possession = "";
+
+        socket.emit("moveBall", {
+          x: ball.x,
+          y: ball.y,
+          possession: ball.possession,
+          time: new Date(),
+        });
       });
 
     this.alignGrid.placeAt(3.5, 3.5, this.joyStick);
     this.alignGrid.placeAt(0.5, 3.5, this.button);
   }
 
-  createPlayer() {
-    const player = new Player(this, this.centerX, this.centerY - 50, "player1");
-    this.player1 = player;
-
+  setOverlapToBall(player) {
     this.physics.add.overlap(
       player.body,
       this.ball.body,
@@ -373,12 +495,12 @@ export default class SceneMain extends Phaser.Scene {
     const distanceFromGoalpostUp = this.goalpostUp.y - ball.y;
     const distanceFromGoalpostDown = this.goalpostDown.y - ball.y;
 
-    if (distanceFromGoalpostUp > 0 || distanceFromGoalpostDown < 0) {
-      this.setToStartPosition(player.body);
-      return;
-    }
+    // if (distanceFromGoalpostUp > 0 || distanceFromGoalpostDown < 0) {
+    //   this.setToStartPosition(player, this.otherPlayer, this.ball);
+    //   return;
+    // }
 
-    ball.possession = true;
+    ball.possession = player.id;
 
     const { direction } = player;
 

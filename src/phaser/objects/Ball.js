@@ -6,7 +6,7 @@ export default class Ball extends Phaser.GameObjects.Sprite {
 
     this.body = scene.physics.add.sprite(x, y, "ballMoving");
     this.body.scale = 3;
-    this.body.possession = false;
+    this.body.possession = "";
 
     scene.alignGrid.placeAt(2, 1.5, this.body);
   }
@@ -21,11 +21,12 @@ export default class Ball extends Phaser.GameObjects.Sprite {
 
   isInGoalpost(goalpost) {
     const distanceY = goalpost.y - this.body.y;
-
+    console.log(this.body.y);
     if (goalpost.texture.key === "goalpostUp") {
+      console.log("up");
       return distanceY > 0;
     }
-
+    console.log("down", goalpost.y, distanceY);
     return distanceY < 0;
   }
 }
