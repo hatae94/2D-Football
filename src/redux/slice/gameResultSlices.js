@@ -8,6 +8,7 @@ const gameResultSlice = createSlice({
     isPlayer1Win: false,
     isPlayer2Win: false,
     isPaused: false,
+    time: 120,
   },
   reducers: {
     countPlayer1Goal(state, action) {
