@@ -40,6 +40,14 @@ export default class SceneMain extends Phaser.Scene {
     const playersFound = {};
     const clientBalls = {};
 
+    socket.on("resetObjects", () => {
+      // 새로고침 없이 route 이동만으로 게임 재시작할 수 있도록 시도 중
+      // this.restart();
+      // clientPlayers = {};
+      // playersFound = {};
+      // clientBalls = {};
+    });
+
     socket.emit("joinRoom");
 
     socket.on("loadPlayer", ({ roomInfo }) => {
@@ -121,7 +129,7 @@ export default class SceneMain extends Phaser.Scene {
       }
     });
 
-    this.createGameOverText();
+    this.createGoalText();
   }
 
   update() {
@@ -150,12 +158,12 @@ export default class SceneMain extends Phaser.Scene {
     }
   }
 
-  createGameOverText() {
-    this.gameOverText = this.add.text(200, 300, "Goal!", { fontSize: "3rem" });
+  createGoalText() {
+    this.goalText = this.add.text(200, 300, "Goal!", { fontSize: "3rem" });
 
-    this.alignGrid.placeAt(1.25, 0.5, this.gameOverText);
+    this.alignGrid.placeAt(1.25, 0.5, this.goalText);
 
-    this.gameOverText.visible = false;
+    this.goalText.visible = false;
   }
 
   createZoneGoalpost(player, ball) {
@@ -294,13 +302,13 @@ export default class SceneMain extends Phaser.Scene {
     ball.setVelocity(0, 0);
 
     store.dispatch(pauseGame());
-    this.gameOverText.visible = true;
+    this.goalText.visible = true;
     this.physics.pause();
 
     setTimeout(() => {
       store.dispatch(restartGame());
       this.physics.resume();
-      this.gameOverText.visible = false;
+      this.goalText.visible = false;
 
       this.setToStartPosition(this.player, this.otherPlayer, this.ball);
     }, 1000);
