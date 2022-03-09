@@ -37,20 +37,18 @@ export default class SceneMain extends Phaser.Scene {
 
     this.createGoalpost(this.ground.background);
 
-    socket.emit("newPlayer");
-
     const clientPlayers = {};
     const playersFound = {};
     const clientBalls = {};
 
-    socket.on("loadPlayer", (players) => {
+    socket.emit("joinRoom");
+
+    socket.on("loadPlayer", ({ roomInfo }) => {
+      const players = roomInfo;
+
       for (const id in players) {
-        if (!clientPlayers[id] && id !== socket.id) {
-          if (!players[id]) {
-            clientPlayers[id] = new Player(this, 0, 0, "player1");
-          } else {
-            clientPlayers[id] = new Player(this, 0, 0, "player2");
-          }
+        if (!clientPlayers[id] && id !== socket.id && id !== "ball") {
+          clientPlayers[id] = new Player(this, 0, 0, players[id].side);
 
           this.otherPlayer = clientPlayers[id];
           this.otherPlayer.id = id;
@@ -59,12 +57,8 @@ export default class SceneMain extends Phaser.Scene {
           playersFound[id] = true;
         }
 
-        if (!clientPlayers[id] && id === socket.id) {
-          if (!players[id]) {
-            clientPlayers[id] = new Player(this, 0, 0, "player1");
-          } else {
-            clientPlayers[id] = new Player(this, 0, 0, "player2");
-          }
+        if (!clientPlayers[id] && id === socket.id && id !== "ball") {
+          clientPlayers[id] = new Player(this, 0, 0, players[id].side);
 
           this.player = clientPlayers[id];
           this.player.id = id;
@@ -82,20 +76,18 @@ export default class SceneMain extends Phaser.Scene {
         }
       }
 
-      if (this.otherPlayer) {
-        this.createBall(this.player.id, this.otherPlayer.id, clientBalls);
+      this.createBall(this.player.id, this.otherPlayer.id, clientBalls, players);
 
-        this.setOverlapToBall(this.player);
+      this.setOverlapToBall(this.player);
 
-        this.createZoneGround(this.player, this.ball);
+      this.createZoneGround(this.player, this.ball);
 
-        this.createZoneGoalpost(this.player, this.ball);
+      this.createZoneGoalpost(this.player, this.ball);
 
-        this.ballOriginPosition = {
-          x: this.ball.body.x,
-          y: this.ball.body.y,
-        };
-      }
+      this.ballOriginPosition = {
+        x: this.ball.body.x,
+        y: this.ball.body.y,
+      };
 
       this.playerOriginPosition = {
         x: this.player.body.x,
@@ -242,16 +234,16 @@ export default class SceneMain extends Phaser.Scene {
     this.physics.add.collider(ball.body, zone);
   }
 
-  createBall(playerId, otherPlayerId, clientBalls) {
-    const matchBallId = playerId + otherPlayerId;
-
-    if (clientBalls[matchBallId]) {
+  createBall(playerId, otherPlayerId, clientBalls, players) {
+    const matchBallId = players.ball.id;
+    if (!clientBalls[matchBallId]) {
+      clientBalls[matchBallId] = new Ball(this, this.centerX, this.centerY);
+    } else {
       return;
     }
 
-    this.ball = new Ball(this, this.centerX, this.centerY);
-    // this.ball = clientBalls[matchBallId];
-    // this.ball.id = matchBallId;
+    this.ball = clientBalls[matchBallId];
+    this.ball.id = matchBallId;
 
     this.ball.body.setBounce(0.2, 0.2);
     this.ball.body.setCollideWorldBounds(true);
@@ -316,7 +308,6 @@ export default class SceneMain extends Phaser.Scene {
   setGrid() {
     const gridConfig = { row: 5, col: 5, scene: this };
     this.alignGrid = new AlignGrid(gridConfig);
-    this.alignGrid.showNumbers();
   }
 
   createGoalpost(background) {

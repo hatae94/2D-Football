@@ -26,10 +26,26 @@ const GlobalStyle = createGlobalStyle`
       font-size: 1.5rem;
       font-weight: bold;
       box-shadow: 2px 2px 2px black;
+      margin-bottom: 1rem;
     }
 
     button:hover {
       background-color: #e1d462;
+    }
+
+    input {
+      width: 60%;
+      height: 10%;
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      border: none;
+      border-bottom: 3px solid #000;
+      background-color: #5a8f3c;
+    }
+
+    input::placeholder {
+      color: #000;
     }
 `;
 

@@ -21,12 +21,11 @@ export default class Ball extends Phaser.GameObjects.Sprite {
 
   isInGoalpost(goalpost) {
     const distanceY = goalpost.y - this.body.y;
-    console.log(this.body.y);
+
     if (goalpost.texture.key === "goalpostUp") {
-      console.log("up");
       return distanceY > 0;
     }
-    console.log("down", goalpost.y, distanceY);
+
     return distanceY < 0;
   }
 }
