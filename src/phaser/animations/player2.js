@@ -88,4 +88,14 @@ export default function createPlayer2Animations(animation) {
     }),
     repeat: Infinity,
   });
+
+  animation.create({
+    key: "player2-tackle-down",
+    frameRate: 1,
+    frames: animation.generateFrameNumbers("redPlayerTackleDown", {
+      start: 0,
+      end: 1,
+    }),
+    repeat: Infinity,
+  });
 }

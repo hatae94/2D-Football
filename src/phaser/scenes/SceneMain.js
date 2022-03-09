@@ -384,6 +384,16 @@ export default class SceneMain extends Phaser.Scene {
         const ball = this.ball.body;
 
         if (!ball.possession) {
+          this.player.speed = 110;
+
+          setTimeout(() => {
+            this.player.speed = 30;
+
+            setTimeout(() => {
+              this.player.speed = 90;
+            }, 500);
+          }, 2000);
+
           return;
         }
 
@@ -396,7 +406,7 @@ export default class SceneMain extends Phaser.Scene {
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
-            }, 1000);
+            }, 300);
             break;
           case "rightDown":
             ball.x = player.x + player.width * 2;
