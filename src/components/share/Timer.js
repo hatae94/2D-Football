@@ -13,7 +13,7 @@ export default function Timer({ seconds }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const isPaused = useSelector((state) => state.gameResult.isPaused);
+  const isPaused = useSelector((state) => state.room.roomInfo.isPaused);
   const isGameOver = useSelector((state) => state.room.roomInfo.isGameOver);
   const [second, setSecond] = useState(seconds);
   const [isOpen, setIsOpen] = useState(false);

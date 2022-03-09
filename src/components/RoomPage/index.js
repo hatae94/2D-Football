@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import styled from "styled-components";
-import Modal from "../Modal";
 import Loader from "../Loader";
 
 import {
-  setIsReady, setName, setUserState, error, setError, checkIsAllReady, makeRoom,
+  setIsReady, setName, setUserState, checkIsAllReady, makeRoom,
 } from "../../redux/slice/roomSlice";
 
 export default function RoomPage() {
@@ -16,7 +15,6 @@ export default function RoomPage() {
 
   const isReady = useSelector((state) => state.room.userInfo.isReady);
   const name = useSelector((state) => state.room.userInfo.name);
-  // const errorMessage = useSelector((state) => state.room.roomInfo.errorMessage);
   const isAllReady = useSelector((state) => state.room.roomInfo.isAllReady);
 
   const [readyText, setReadyText] = useState("준비");
@@ -32,7 +30,6 @@ export default function RoomPage() {
   function handleMatchClick() {
     dispatch(makeRoom());
     dispatch(setUserState({ name, isReady }));
-    dispatch(error());
     dispatch(checkIsAllReady());
 
     if (!isAllReady) {
@@ -58,10 +55,6 @@ export default function RoomPage() {
     const { value } = event.target;
 
     dispatch(setName({ name: value }));
-  }
-
-  function handleModalClose() {
-    dispatch(setError({ error: "" }));
   }
 
   return (

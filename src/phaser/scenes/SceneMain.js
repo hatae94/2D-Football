@@ -1,11 +1,10 @@
 import Phaser from "phaser";
 
-import {
-  countPlayer1Goal,
-  pauseGame,
-  restartGame,
-} from "../../redux/slice/gameResultSlices";
 import store from "../../redux/store";
+
+import {
+  countPlayerScore, countOtherPlayerScore, pauseGame, restartGame,
+} from "../../redux/slice/roomSlice";
 
 import Ground from "../classes/Ground";
 import Ball from "../objects/Ball";
@@ -53,6 +52,7 @@ export default class SceneMain extends Phaser.Scene {
           this.otherPlayer = clientPlayers[id];
           this.otherPlayer.id = id;
           this.otherPlayer.body.id = id;
+          this.otherPlayer.side = players[id].side;
 
           playersFound[id] = true;
         }
@@ -63,6 +63,7 @@ export default class SceneMain extends Phaser.Scene {
           this.player = clientPlayers[id];
           this.player.id = id;
           this.player.body.id = id;
+          this.player.side = players[id].side;
 
           playersFound[id] = true;
         }
@@ -274,9 +275,24 @@ export default class SceneMain extends Phaser.Scene {
   }
 
   HandleGoalCount(ball, goalpost) {
+    const goalpostKey = goalpost.texture.key;
+
+    if (goalpostKey === "goalpostUp") {
+      if (this.player.side === "player1") {
+        store.dispatch(countPlayerScore());
+      } else {
+        store.dispatch(countOtherPlayerScore());
+      }
+    } else if (goalpostKey === "goalpostDown") {
+      if (this.player.side === "player2") {
+        store.dispatch(countPlayerScore());
+      } else {
+        store.dispatch(countOtherPlayerScore());
+      }
+    }
+
     ball.setVelocity(0, 0);
 
-    store.dispatch(countPlayer1Goal());
     store.dispatch(pauseGame());
     this.gameOverText.visible = true;
     this.physics.pause();
@@ -482,14 +498,6 @@ export default class SceneMain extends Phaser.Scene {
 
   handlePlayerDribbleBall(player, ball) {
     this.ball.move();
-
-    const distanceFromGoalpostUp = this.goalpostUp.y - ball.y;
-    const distanceFromGoalpostDown = this.goalpostDown.y - ball.y;
-
-    // if (distanceFromGoalpostUp > 0 || distanceFromGoalpostDown < 0) {
-    //   this.setToStartPosition(player, this.otherPlayer, this.ball);
-    //   return;
-    // }
 
     ball.possession = player.id;
 
