@@ -25,8 +25,8 @@ const ModalStyle = styled.div`
   justify-content: space-around;
   align-items: center;
   position: fixed;
-  top: 30rem;
-  left: 13rem;
+  top: 50%;
+  left: 50%;
   width: 15rem;
   height: 13rem;
   transform: translate(-50%, -50%);

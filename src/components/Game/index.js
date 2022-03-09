@@ -10,13 +10,12 @@ import ScoreBox from "../share/ScoreBox";
 
 export default function Game() {
   const time = useSelector((state) => state.room.roomInfo.time);
-  let game = {};
 
   useEffect(() => {
-    game = new Phaser.Game(config);
+    const game = new Phaser.Game(config);
 
     return () => {
-      game.destroy(true, true);
+      game.destroy(true, false);
     };
   }, [config]);
 

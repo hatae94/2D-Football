@@ -1,24 +1,26 @@
 import { createSlice, createAction } from "@reduxjs/toolkit";
 
+const initialState = {
+  roomInfo: {
+    time: 1,
+    isAllReady: false,
+    isPaused: false,
+    isGameOver: false,
+  },
+  userInfo: {
+    name: "",
+    score: 0,
+    isReady: false,
+  },
+  otherUserInfo: {
+    name: "",
+    score: 0,
+  },
+};
+
 const roomSlice = createSlice({
   name: "room",
-  initialState: {
-    roomInfo: {
-      time: 120,
-      isAllReady: false,
-      isPaused: false,
-      isGameOver: false,
-    },
-    userInfo: {
-      name: "",
-      score: 0,
-      isReady: false,
-    },
-    otherUserInfo: {
-      name: "",
-      score: 0,
-    },
-  },
+  initialState,
   reducers: {
     getTime(state, payload) {
       state.roomInfo.time = payload.time;
@@ -57,11 +59,14 @@ const roomSlice = createSlice({
     restartGame(state, action) {
       state.roomInfo.isPaused = false;
     },
+    setToInitial(state, action) {
+      return initialState;
+    },
   },
 });
 
 export const {
-  getTime, reduceTime, countPlayerScore, setName, setIsReady, setIsAllReady, gameOver, countOtherPlayerScore, setOtherUserName, pauseGame, restartGame,
+  getTime, reduceTime, countPlayerScore, setName, setIsReady, setIsAllReady, gameOver, countOtherPlayerScore, setOtherUserName, pauseGame, restartGame, setToInitial,
 } =
 roomSlice.actions;
 
@@ -69,5 +74,6 @@ export const setUserState = createAction("setUserState");
 export const checkIsAllReady = createAction("checkIsAllReady");
 export const makeRoom = createAction("makeRoom");
 export const setGameOver = createAction("setGameOver");
+export const resetObjects = createAction("resetObjects");
 
 export default roomSlice.reducer;
