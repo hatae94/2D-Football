@@ -1,22 +1,28 @@
 import Phaser from "phaser";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import config from "../../phaser/config/config";
+
 import Timer from "../share/Timer";
 
 export default function Game() {
+  const time = useSelector((state) => state.room.roomInfo.time);
+  let game = {};
+
+  // time 가져오기
   useEffect(() => {
-    const game = new Phaser.Game(config);
+    game = new Phaser.Game(config);
 
     return () => {
-      game.destroy();
+      game.destroy(true, true);
     };
   }, [config]);
 
   return (
     <>
       <div id="container" />
-      <Timer seconds={120} />
+      <Timer seconds={time} />
     </>
   );
 }

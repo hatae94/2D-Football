@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAction } from "@reduxjs/toolkit";
 
 const gameResultSlice = createSlice({
   name: "gameResult",
@@ -25,4 +25,5 @@ const gameResultSlice = createSlice({
 
 export const { countPlayer1Goal, pauseGame, restartGame } =
   gameResultSlice.actions;
+
 export default gameResultSlice.reducer;
