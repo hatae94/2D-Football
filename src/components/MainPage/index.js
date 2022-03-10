@@ -1,12 +1,8 @@
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import styled from "styled-components";
 
-import RoomPage from "../RoomPage";
-
-import mainPagePlayerOpenEyes from "../../assets/main_page_player_open_eyes.png";
-import mainPagePlayerCloseEyes from "../../assets/main_page_player_close_eyes.png";
+import mainPagePlayerSprite from "../../assets/main_page.png";
 import mainPageCrowd from "../../assets/main_page_crowd.png";
 
 export default function MainPage() {
@@ -18,7 +14,7 @@ export default function MainPage() {
 
   return (
     <MainPageWrapper>
-      <img className="playerImg" src={mainPagePlayerOpenEyes} alt="main page player" />
+      <div className="playerImg" style={{ background: `url(${mainPagePlayerSprite})` }} />
       <div className="titleBox">
         2D Football
       </div>
@@ -41,8 +37,15 @@ const MainPageWrapper = styled.div`
   background-color: #5a8f3c;
 
   .playerImg {
-    width: 60%;
+    width: 358px;
+    height: 174px;
     margin-top: 5rem;
+    animation: sprite 1.5s steps(2) infinite;
+  }
+
+  @keyframes sprite {
+    from { background-position: 0px; }
+    to { background-position: -716px; }
   }
 
   .titleBox {

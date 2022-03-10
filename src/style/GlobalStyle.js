@@ -29,13 +29,9 @@ const GlobalStyle = createGlobalStyle`
       margin-bottom: 1rem;
     }
 
-    button:hover {
-      background-color: #e1d462;
-    }
-
     input {
-      width: 60%;
-      height: 10%;
+      width: 15rem;
+      height: 5rem;
       font-size: 3rem;
       text-align: center;
       margin-bottom: 3rem;

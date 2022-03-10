@@ -10,6 +10,7 @@ const config = {
   height: window.innerHeight,
   pixelArt: true,
   zoom: 1,
+  parent: "container",
   backgroundColor: "#5a8f3c",
   physics: {
     default: "arcade",

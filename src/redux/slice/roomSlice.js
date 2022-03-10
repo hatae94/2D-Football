@@ -6,6 +6,7 @@ const initialState = {
     isAllReady: false,
     isPaused: false,
     isGameOver: false,
+    suddenDisconnectedMessage: "",
   },
   userInfo: {
     name: "",
@@ -22,8 +23,8 @@ const roomSlice = createSlice({
   name: "room",
   initialState,
   reducers: {
-    getTime(state, payload) {
-      state.roomInfo.time = payload.time;
+    getTime(state, { payload: { time } }) {
+      state.roomInfo.time = time;
     },
     reduceTime(state) {
       state.roomInfo.time -= 1;
@@ -53,20 +54,23 @@ const roomSlice = createSlice({
         }
       });
     },
-    pauseGame(state, action) {
+    pauseGame(state, payload) {
       state.roomInfo.isPaused = true;
     },
-    restartGame(state, action) {
+    restartGame(state, payload) {
       state.roomInfo.isPaused = false;
     },
-    setToInitial(state, action) {
+    suddenDisconnectedMessage(state, { payload: { message } }) {
+      state.roomInfo.suddenDisconnectedMessage = message;
+    },
+    setToInitial(state, payload) {
       return initialState;
     },
   },
 });
 
 export const {
-  getTime, reduceTime, countPlayerScore, setName, setIsReady, setIsAllReady, gameOver, countOtherPlayerScore, setOtherUserName, pauseGame, restartGame, setToInitial,
+  getTime, reduceTime, countPlayerScore, setName, setIsReady, setIsAllReady, gameOver, countOtherPlayerScore, setOtherUserName, pauseGame, restartGame, setToInitial, suddenDisconnectedMessage,
 } =
 roomSlice.actions;
 
@@ -75,5 +79,6 @@ export const checkIsAllReady = createAction("checkIsAllReady");
 export const makeRoom = createAction("makeRoom");
 export const setGameOver = createAction("setGameOver");
 export const resetObjects = createAction("resetObjects");
+export const someUserDisconnected = createAction("someUserDisconnected");
 
 export default roomSlice.reducer;
