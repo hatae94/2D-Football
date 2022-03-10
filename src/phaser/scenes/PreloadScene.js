@@ -7,6 +7,7 @@ import createPlayer2Animations from "../animations/player2";
 export default class Preloader extends Phaser.Scene {
   preload() {
     this.load.setBaseURL("http://localhost:3000");
+
     this.loadGroundImage();
     this.loadBallImage();
     this.loadPlayer1Image();

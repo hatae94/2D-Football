@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -6,10 +6,9 @@ import styled from "styled-components";
 import PropsTypes from "prop-types";
 
 import Modal from "../Modal";
-import ScoreBox from "./ScoreBox";
 
 import {
-  setGameOver, makeRoom, setToInitial, resetObjects,
+  setGameOver, makeRoom, setToInitial, resetObjects, setName,
 } from "../../redux/slice/roomSlice";
 
 export default function Timer({ seconds }) {
@@ -20,8 +19,11 @@ export default function Timer({ seconds }) {
   const isGameOver = useSelector((state) => state.room.roomInfo.isGameOver);
   const userScore = useSelector((state) => state.room.userInfo.score);
   const otherUserScore = useSelector((state) => state.room.otherUserInfo.score);
+  const name = useSelector((state) => state.room.userInfo.name);
+
   const [second, setSecond] = useState(seconds);
   const [isOpen, setIsOpen] = useState(false);
+  const userName = useRef("");
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -45,12 +47,13 @@ export default function Timer({ seconds }) {
   }, [isGameOver]);
 
   function handleBackOnClick() {
-    // 새로고침 없이 route 이동만으로 게임 재시작할 수 있도록 시도 중
-    // dispatch(makeRoom());
-    // dispatch(resetObjects());
-    // dispatch(setToInitial());
-    // history.push("/");
-    window.location.reload();
+    userName.current = name;
+
+    dispatch(makeRoom());
+    dispatch(resetObjects());
+    dispatch(setToInitial());
+    dispatch(dispatch(setName({ name: userName.current })));
+    history.push("/");
   }
 
   return (
@@ -66,7 +69,7 @@ export default function Timer({ seconds }) {
         </GameOverTextBox>
         <button type="button" onClick={handleBackOnClick}>돌아가기</button>
       </Modal>
-      <TimerBox>Time : {second}</TimerBox>
+      <TimerBox>Time : {`${Math.trunc(second / 60)}분 ${second % 60}초`}</TimerBox>
     </>
   );
 }

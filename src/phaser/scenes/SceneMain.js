@@ -37,18 +37,14 @@ export default class SceneMain extends Phaser.Scene {
     this.createGoalpost(this.ground.background);
 
     const clientPlayers = {};
-    const playersFound = {};
     const clientBalls = {};
 
-    socket.on("resetObjects", () => {
-      // 새로고침 없이 route 이동만으로 게임 재시작할 수 있도록 시도 중
-      // this.restart();
-      // clientPlayers = {};
-      // playersFound = {};
-      // clientBalls = {};
-    });
-
     socket.emit("joinRoom");
+
+    socket.on("resetObjects", () => {
+      delete clientPlayers[socket.id];
+      delete clientBalls[socket.id];
+    });
 
     socket.on("loadPlayer", ({ roomInfo }) => {
       const players = roomInfo;
@@ -61,8 +57,6 @@ export default class SceneMain extends Phaser.Scene {
           this.otherPlayer.id = id;
           this.otherPlayer.body.id = id;
           this.otherPlayer.side = players[id].side;
-
-          playersFound[id] = true;
         }
 
         if (!clientPlayers[id] && id === socket.id && id !== "ball") {
@@ -72,20 +66,10 @@ export default class SceneMain extends Phaser.Scene {
           this.player.id = id;
           this.player.body.id = id;
           this.player.side = players[id].side;
-
-          playersFound[id] = true;
         }
       }
 
-      for (const id in clientPlayers) {
-        if (!playersFound[id]) {
-          clientPlayers[id].destroy();
-          delete playersFound[id];
-          delete clientPlayers[id];
-        }
-      }
-
-      this.createBall(this.player.id, this.otherPlayer.id, clientBalls, players);
+      this.createBall(clientBalls, players);
 
       this.setOverlapToBall(this.player);
 
@@ -105,7 +89,7 @@ export default class SceneMain extends Phaser.Scene {
     });
 
     socket.on("otherPlayerMove", ({
-      x, y, anims, id, serverTime,
+      x, y, anims, id,
     }) => {
       if (this.otherPlayer && this.otherPlayer.id === id) {
         this.otherPlayer.body.x = x;
@@ -116,17 +100,17 @@ export default class SceneMain extends Phaser.Scene {
     });
 
     socket.on("ballMove", ({
-      x, y, id, possession, serverTime,
+      x, y, possession,
     }) => {
-      if (this.ball) {
-        this.ball.body.possession = possession;
+      this.ball.move();
 
-        this.ball.body.x = x;
-        this.ball.body.y = y;
+      this.ball.body.possession = possession;
 
-        this.ballOriginPosition.x = x;
-        this.ballOriginPosition.y = y;
-      }
+      this.ball.body.x = x;
+      this.ball.body.y = y;
+
+      this.ballOriginPosition.x = x;
+      this.ballOriginPosition.y = y;
     });
 
     this.createGoalText();
@@ -144,7 +128,6 @@ export default class SceneMain extends Phaser.Scene {
         x: this.player.body.x,
         y: this.player.body.y,
         anims: this.player.body.anims.currentAnim.key,
-        time: new Date(),
       });
     }
 
@@ -153,7 +136,6 @@ export default class SceneMain extends Phaser.Scene {
         x: this.ball.body.x,
         y: this.ball.body.y,
         possession: this.ball.body.possession,
-        time: new Date(),
       });
     }
   }
@@ -243,7 +225,7 @@ export default class SceneMain extends Phaser.Scene {
     this.physics.add.collider(ball.body, zone);
   }
 
-  createBall(playerId, otherPlayerId, clientBalls, players) {
+  createBall(clientBalls, players) {
     const matchBallId = players.ball.id;
     if (!clientBalls[matchBallId]) {
       clientBalls[matchBallId] = new Ball(this, this.centerX, this.centerY);
@@ -496,7 +478,6 @@ export default class SceneMain extends Phaser.Scene {
           x: ball.x,
           y: ball.y,
           possession: ball.possession,
-          time: new Date(),
         });
       });
 

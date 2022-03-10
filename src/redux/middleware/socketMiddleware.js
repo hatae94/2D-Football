@@ -1,5 +1,5 @@
 import {
-  setIsAllReady, gameOver, setOtherUserName,
+  setIsAllReady, gameOver, setOtherUserName, suddenDisconnectedMessage,
 } from "../slice/roomSlice";
 
 import socket from "../../utils/socket";
@@ -15,6 +15,10 @@ const socketMiddleware = () => (store) => {
 
   socket.on("sendPlayersNameList", (playersNameList) => {
     store.dispatch(setOtherUserName(playersNameList));
+  });
+
+  socket.on("someUserDisconnected", ({ message }) => {
+    store.dispatch(suddenDisconnectedMessage({ message }));
   });
 
   return (next) => (action) => {
