@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "2dfootball-env.eba-gw2wf4yp.ap-northeast-2.elasticbeanstalk.com",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^5.16.2",
