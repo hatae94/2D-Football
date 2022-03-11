@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+
 import SceneMain from "../scenes/SceneMain";
 import Preloader from "../scenes/PreloadScene";
 
