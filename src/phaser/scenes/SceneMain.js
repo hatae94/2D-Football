@@ -376,6 +376,20 @@ export default class SceneMain extends Phaser.Scene {
     const { direction } = this.player.body;
     const ball = this.ball.body;
 
+    if (!ball.possession) {
+      this.player.speed = PLAYER_INFO.EXTRA_SPEED;
+
+      setTimeout(() => {
+        this.player.speed = PLAYER_INFO.DONW_SPEED;
+
+        setTimeout(() => {
+          this.player.speed = PLAYER_INFO.NORMAL_SPEED;
+        }, 500);
+      }, 2000);
+
+      return;
+    }
+
     switch (direction) {
       case "right":
         ball.x = player.x + player.width * 2;
@@ -474,7 +488,7 @@ export default class SceneMain extends Phaser.Scene {
     socket.emit("moveBall", {
       x: ball.x,
       y: ball.y,
-      possession: ball.possession,
+      possession: this.ball.body.possession,
     });
   }
 
@@ -491,7 +505,7 @@ export default class SceneMain extends Phaser.Scene {
   handlePlayerDribbleBall(player, ball) {
     this.ball.move();
 
-    ball.possession = player.id;
+    this.ball.body.possession = player.id;
 
     const { direction } = player;
 
