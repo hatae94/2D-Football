@@ -137,11 +137,13 @@ export default class SceneMain extends Phaser.Scene {
     }
 
     if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
-      socket.emit("moveBall", {
-        x: this.ball.body.x,
-        y: this.ball.body.y,
-        possession: this.ball.body.possession,
-      });
+      if (this.ball.possession) {
+        socket.emit("moveBall", {
+          x: this.ball.body.x,
+          y: this.ball.body.y,
+          possession: this.ball.body.possession,
+        });
+      }
     }
   }
 
@@ -390,6 +392,8 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
+    ball.possession = "";
+
     switch (direction) {
       case "right":
         ball.x = player.x + player.width * 2;
@@ -482,8 +486,6 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
         }, 1000);
     }
-
-    ball.possession = "";
 
     socket.emit("moveBall", {
       x: ball.x,
