@@ -376,7 +376,7 @@ export default class SceneMain extends Phaser.Scene {
     const { direction } = this.player.body;
     const ball = this.ball.body;
 
-    if (!ball.possession) {
+    if (ball.possession !== player.id) {
       this.player.speed = PLAYER_INFO.EXTRA_SPEED;
 
       setTimeout(() => {
