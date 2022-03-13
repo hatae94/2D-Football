@@ -27,11 +27,6 @@ export default class SceneMain extends Phaser.Scene {
   create() {
     this.setGrid();
 
-    this.createVirtualController(
-      this.sys.canvas.width / 2,
-      this.sys.canvas.height / 2,
-      this.sys.canvas,
-    );
     this.createGround();
 
     this.createGoalpost(this.ground.background);
@@ -70,6 +65,12 @@ export default class SceneMain extends Phaser.Scene {
       }
 
       this.createBall(clientBalls, players);
+
+      this.createVirtualController(
+        this.sys.canvas.width / 2,
+        this.sys.canvas.height / 2,
+        this.sys.canvas,
+      );
 
       this.setOverlapToBall(this.player);
 
@@ -360,129 +361,131 @@ export default class SceneMain extends Phaser.Scene {
         0x888888,
       )
       .setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        const player = this.player.body;
-        const { direction } = this.player.body;
-        const ball = this.ball.body;
-
-        if (!ball.possession) {
-          this.player.speed = 110;
-
-          setTimeout(() => {
-            this.player.speed = 30;
-
-            setTimeout(() => {
-              this.player.speed = 90;
-            }, 500);
-          }, 2000);
-
-          return;
-        }
-
-        switch (direction) {
-          case "right":
-            ball.x = player.x + player.width * 2;
-            ball.y = player.y + player.height * 1.5;
-
-            ball.setVelocity(100, 0);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 300);
-            break;
-          case "rightDown":
-            ball.x = player.x + player.width * 2;
-            ball.y = player.y + player.height * 1.5;
-
-            ball.setVelocity(100, 100);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "down":
-            ball.x = player.x;
-            ball.y = player.y + player.height * 2;
-
-            ball.setVelocityY(100);
-            setTimeout(() => {
-              ball.setVelocityY(0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "leftDown":
-            ball.x = player.x - player.width * 2;
-            ball.y = player.y + player.height * 1.5;
-
-            ball.setVelocity(-100, 100);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "left":
-            ball.x = player.x - player.width * 2;
-            ball.y = player.y + player.height * 1.5;
-
-            ball.setVelocity(-100, 0);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "leftUp":
-            ball.x = player.x - player.width * 2;
-            ball.y = player.y - player.height * 1.5;
-
-            ball.setVelocity(-100, -100);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "up":
-            ball.x = player.x;
-            ball.y = player.y - player.height * 2;
-
-            ball.setVelocityY(-100);
-            setTimeout(() => {
-              ball.setVelocityY(0);
-              ball.stop();
-            }, 1000);
-            break;
-          case "rightUp":
-            ball.x = player.x + player.width * 2;
-            ball.y = player.y + player.height * 1.5;
-
-            ball.setVelocity(100, -100);
-            setTimeout(() => {
-              ball.setVelocity(0, 0);
-              ball.stop();
-            }, 1000);
-            break;
-          default:
-            ball.x = player.x;
-            ball.y = player.y + player.height * 2;
-
-            ball.setVelocityY(100);
-
-            setTimeout(() => {
-              ball.setVelocityY(0);
-              ball.stop();
-            }, 1000);
-        }
-
-        ball.possession = "";
-
-        socket.emit("moveBall", {
-          x: ball.x,
-          y: ball.y,
-          possession: ball.possession,
-        });
-      });
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.handleButtonClick, this);
 
     this.alignGrid.placeAt(3.5, 3.5, this.joyStick);
     this.alignGrid.placeAt(0.5, 3.5, this.button);
+  }
+
+  handleButtonClick() {
+    const player = this.player.body;
+    const { direction } = this.player.body;
+    const ball = this.ball.body;
+    console.log(ball.possession);
+    if (!ball.possession) {
+      this.player.speed = 110;
+
+      setTimeout(() => {
+        this.player.speed = 30;
+
+        setTimeout(() => {
+          this.player.speed = 90;
+        }, 500);
+      }, 2000);
+
+      return;
+    }
+
+    switch (direction) {
+      case "right":
+        ball.x = player.x + player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(100, 0);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 300);
+        break;
+      case "rightDown":
+        ball.x = player.x + player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(100, 100);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "down":
+        ball.x = player.x;
+        ball.y = player.y + player.height * 2;
+
+        ball.setVelocityY(100);
+        setTimeout(() => {
+          ball.setVelocityY(0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "leftDown":
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(-100, 100);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "left":
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(-100, 0);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "leftUp":
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y - player.height * 1.5;
+
+        ball.setVelocity(-100, -100);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "up":
+        ball.x = player.x;
+        ball.y = player.y - player.height * 2;
+
+        ball.setVelocityY(-100);
+        setTimeout(() => {
+          ball.setVelocityY(0);
+          ball.stop();
+        }, 1000);
+        break;
+      case "rightUp":
+        ball.x = player.x + player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(100, -100);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+        }, 1000);
+        break;
+      default:
+        ball.x = player.x;
+        ball.y = player.y + player.height * 2;
+
+        ball.setVelocityY(100);
+
+        setTimeout(() => {
+          ball.setVelocityY(0);
+          ball.stop();
+        }, 1000);
+    }
+
+    ball.possession = "";
+
+    socket.emit("moveBall", {
+      x: ball.x,
+      y: ball.y,
+      possession: ball.possession,
+    });
   }
 
   setOverlapToBall(player) {
