@@ -137,7 +137,7 @@ export default class SceneMain extends Phaser.Scene {
     }
 
     if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
-      if (this.ball.possession) {
+      if (this.ball.body.possession) {
         socket.emit("moveBall", {
           x: this.ball.body.x,
           y: this.ball.body.y,
