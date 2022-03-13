@@ -95,13 +95,6 @@ export default class Preloader extends Phaser.Scene {
       frameWidth: 7,
       frameHeight: 7,
     });
-    this.load.image("redPlayerTackleLeftDown", "red_player_tackle_left_down.png");
-    this.load.image("redPlayerTackleLeftUp", "red_player_tackle_left_up.png");
-    this.load.image("redPlayerTackleLeft", "red_player_tackle_left.png");
-    this.load.image("redPlayerTackleRightDown", "red_player_tackle_right_down.png");
-    this.load.image("redPlayerTackleRightUp", "red_player_tackle_right_up.png");
-    this.load.image("redPlayerTackleRight", "red_player_tackle_right.png");
-    this.load.image("redPlayerTackleUp", "red_player_tackle_up.png");
   }
 
   loadPlayer1Image() {
@@ -157,13 +150,5 @@ export default class Preloader extends Phaser.Scene {
       frameWidth: 7,
       frameHeight: 7,
     });
-    this.load.image("bluePlayerTackleDown", "blue_player_tackle_down.png");
-    this.load.image("bluePlayerTackleLeftDown", "blue_player_tackle_left_down.png");
-    this.load.image("bluePlayerTackleLeftUp", "blue_player_tackle_left_up.png");
-    this.load.image("bluePlayerTackleLeft", "blue_player_tackle_left.png");
-    this.load.image("bluePlayerTackleRightDown", "blue_player_tackle_right_down.png");
-    this.load.image("bluePlayerTackleRightUp", "blue_player_tackle_right_up.png");
-    this.load.image("bluePlayerTackleRight", "blue_player_tackle_right.png");
-    this.load.image("bluePlayerTackleUp", "blue_player_tackle_up.png");
   }
 }

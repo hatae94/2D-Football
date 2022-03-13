@@ -1,24 +1,26 @@
 import Phaser from "phaser";
 
+import { PLAYER_INFO, JOYSTICK } from "../../constants/game";
+
 export default class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.speed = 90;
+    this.speed = PLAYER_INFO.NORMAL_SPEED;
 
     this.textureName = texture;
 
     this.body = scene.physics.add.sprite(x, y, `${this.textureName}Stand`);
 
     if (this.textureName === "player1") {
-      this.body.gridPosition = 12;
+      this.body.gridPosition = PLAYER_INFO.PLAYER1_GRID_POSITION;
       scene.alignGrid.placeAtIndex(this.body.gridPosition, this.body);
     } else {
-      this.body.gridPosition = 7;
+      this.body.gridPosition = PLAYER_INFO.PLAYER2_GRID_POSITION;
       scene.alignGrid.placeAtIndex(this.body.gridPosition, this.body);
     }
 
-    this.body.scale = 3;
+    this.body.scale = PLAYER_INFO.BODY_SCALE;
 
     this.body.direction = "";
 
@@ -37,42 +39,42 @@ export default class Player extends Phaser.GameObjects.Sprite {
     const uniformVelocityY = this.speed * Math.sin((angle * Math.PI) / 180);
 
     switch (true) {
-      case force && angle > -20 && angle < 20:
+      case force && angle < JOYSTICK.RIGHT_RANGE.FROM && angle > JOYSTICK.RIGHT_RANGE.TO:
         this.body.direction = "right";
         this.body.anims.play(`${this.textureName}-right`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle < -20 && angle > -70:
+      case angle < JOYSTICK.RIGHT_UP_RANGE.FROM && angle > JOYSTICK.RIGHT_UP_RANGE.TO:
         this.body.direction = "rightUp";
         this.body.anims.play(`${this.textureName}-rightUp`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle < -70 && angle > -110:
+      case angle < JOYSTICK.UP_RANGE.FROM && angle > JOYSTICK.UP_RANGE.TO:
         this.body.direction = "up";
         this.body.anims.play(`${this.textureName}-up`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle > -160 && angle < -110:
+      case angle < JOYSTICK.LEFT_UP_RANGE.FROM && angle > JOYSTICK.LEFT_UP_RANGE.TO:
         this.body.direction = "leftUp";
         this.body.anims.play(`${this.textureName}-leftUp`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle < -160 || angle > 160:
+      case angle < JOYSTICK.LEFT_RANGE.FROM || angle > JOYSTICK.LEFT_RANGE.TO:
         this.body.direction = "left";
         this.body.anims.play(`${this.textureName}-left`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle < 160 && angle > 110:
+      case angle < JOYSTICK.LEFT_DOWN_RANGE.FROM && angle > JOYSTICK.LEFT_DOWN_RANGE.TO:
         this.body.direction = "leftDown";
         this.body.anims.play(`${this.textureName}-leftDown`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle > 70 && angle < 110:
+      case angle < JOYSTICK.DOWN_RANGE.FROM && angle > JOYSTICK.DOWN_RANGE.TO:
         this.body.direction = "down";
         this.body.anims.play(`${this.textureName}-down`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         break;
-      case angle < 70 && angle > 20:
+      case angle < JOYSTICK.RIGHT_DOWN_RANGE.FROM && angle > JOYSTICK.RIGHT_DOWN_RANGE.TO:
         this.body.direction = "rightDown";
         this.body.anims.play(`${this.textureName}-rightDown`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
