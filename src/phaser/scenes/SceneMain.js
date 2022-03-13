@@ -12,6 +12,10 @@ import Player from "../objects/Player";
 import AlignGrid from "../classes/util/AlignGrid";
 import socket from "../../utils/socket";
 
+import {
+  TEXT_INFO, BALL_INFO, PLAYER_INFO, JOYSTICK,
+} from "../../constants/game";
+
 export default class SceneMain extends Phaser.Scene {
   constructor() {
     super("SceneMain");
@@ -141,9 +145,9 @@ export default class SceneMain extends Phaser.Scene {
   }
 
   createGoalText() {
-    this.goalText = this.add.text(200, 300, "Goal!", { fontSize: "3rem" });
+    this.goalText = this.add.text(TEXT_INFO.PIXEL_POSITION.X, TEXT_INFO.PIXEL_POSITION.Y, "Goal!", { fontSize: "3rem" });
 
-    this.alignGrid.placeAt(1.25, 0.5, this.goalText);
+    this.alignGrid.placeAt(TEXT_INFO.GRID_POSITION.X, TEXT_INFO.GRID_POSITION.Y, this.goalText);
 
     this.goalText.visible = false;
   }
@@ -236,7 +240,7 @@ export default class SceneMain extends Phaser.Scene {
     this.ball = clientBalls[matchBallId];
     this.ball.id = matchBallId;
 
-    this.ball.body.setBounce(0.2, 0.2);
+    this.ball.body.setBounce(BALL_INFO.BOUNCE.X, BALL_INFO.BOUNCE.Y);
     this.ball.body.setCollideWorldBounds(true);
 
     [this.goalpostUp, this.goalpostDown].forEach((goalpost) => {
@@ -255,7 +259,7 @@ export default class SceneMain extends Phaser.Scene {
 
     this.alignGrid.placeAtIndex(player.body.gridPosition, player.body);
     this.alignGrid.placeAtIndex(otherPlayer.body.gridPosition, otherPlayer.body);
-    this.alignGrid.placeAt(2, 1.5, ball.body);
+    this.alignGrid.placeAt(BALL_INFO.POSITION.X, BALL_INFO.POSITION.Y, ball.body);
 
     socket.emit("movePlayer", {
       x: this.player.body.x,
@@ -366,13 +370,13 @@ export default class SceneMain extends Phaser.Scene {
         const ball = this.ball.body;
 
         if (!ball.possession) {
-          this.player.speed = 110;
+          this.player.speed = PLAYER_INFO.EXTRA_SPEED;
 
           setTimeout(() => {
-            this.player.speed = 30;
+            this.player.speed = PLAYER_INFO.DONW_SPEED;
 
             setTimeout(() => {
-              this.player.speed = 90;
+              this.player.speed = PLAYER_INFO.NORMAL_SPEED;
             }, 500);
           }, 2000);
 
@@ -384,7 +388,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x + player.width * 2;
             ball.y = player.y + player.height * 1.5;
 
-            ball.setVelocity(100, 0);
+            ball.setVelocity(BALL_INFO.SPEED, 0);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -394,7 +398,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x + player.width * 2;
             ball.y = player.y + player.height * 1.5;
 
-            ball.setVelocity(100, 100);
+            ball.setVelocity(BALL_INFO.SPEED, BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -404,7 +408,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x;
             ball.y = player.y + player.height * 2;
 
-            ball.setVelocityY(100);
+            ball.setVelocityY(BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocityY(0);
               ball.stop();
@@ -414,7 +418,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x - player.width * 2;
             ball.y = player.y + player.height * 1.5;
 
-            ball.setVelocity(-100, 100);
+            ball.setVelocity(-BALL_INFO.SPEED, BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -424,7 +428,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x - player.width * 2;
             ball.y = player.y + player.height * 1.5;
 
-            ball.setVelocity(-100, 0);
+            ball.setVelocity(-BALL_INFO.SPEED, 0);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -434,7 +438,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x - player.width * 2;
             ball.y = player.y - player.height * 1.5;
 
-            ball.setVelocity(-100, -100);
+            ball.setVelocity(-BALL_INFO.SPEED, -BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -444,7 +448,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x;
             ball.y = player.y - player.height * 2;
 
-            ball.setVelocityY(-100);
+            ball.setVelocityY(-BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocityY(0);
               ball.stop();
@@ -454,7 +458,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x + player.width * 2;
             ball.y = player.y + player.height * 1.5;
 
-            ball.setVelocity(100, -100);
+            ball.setVelocity(BALL_INFO.SPEED, -BALL_INFO.SPEED);
             setTimeout(() => {
               ball.setVelocity(0, 0);
               ball.stop();
@@ -464,7 +468,7 @@ export default class SceneMain extends Phaser.Scene {
             ball.x = player.x;
             ball.y = player.y + player.height * 2;
 
-            ball.setVelocityY(100);
+            ball.setVelocityY(BALL_INFO.SPEED);
 
             setTimeout(() => {
               ball.setVelocityY(0);
@@ -481,8 +485,8 @@ export default class SceneMain extends Phaser.Scene {
         });
       });
 
-    this.alignGrid.placeAt(3.5, 3.5, this.joyStick);
-    this.alignGrid.placeAt(0.5, 3.5, this.button);
+    this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStick);
+    this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.button);
   }
 
   setOverlapToBall(player) {

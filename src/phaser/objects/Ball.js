@@ -1,14 +1,16 @@
 import Phaser from "phaser";
 
+import { BALL_INFO } from "../../constants/game";
+
 export default class Ball extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y);
 
     this.body = scene.physics.add.sprite(x, y, "ballMoving");
-    this.body.scale = 3;
+    this.body.scale = BALL_INFO.BODY_SCALE;
     this.body.possession = "";
 
-    scene.alignGrid.placeAt(2, 1.5, this.body);
+    scene.alignGrid.placeAt(BALL_INFO.POSITION.X, BALL_INFO.POSITION.Y, this.body);
   }
 
   move() {
