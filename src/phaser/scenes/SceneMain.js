@@ -137,13 +137,11 @@ export default class SceneMain extends Phaser.Scene {
     }
 
     if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
-      if (this.ball.body.possession) {
-        socket.emit("moveBall", {
-          x: this.ball.body.x,
-          y: this.ball.body.y,
-          possession: this.ball.body.possession,
-        });
-      }
+      socket.emit("moveBall", {
+        x: this.ball.body.x,
+        y: this.ball.body.y,
+        possession: this.ball.body.possession,
+      });
     }
   }
 
@@ -234,6 +232,7 @@ export default class SceneMain extends Phaser.Scene {
 
   createBall(clientBalls, players) {
     const matchBallId = players.ball.id;
+
     if (!clientBalls[matchBallId]) {
       clientBalls[matchBallId] = new Ball(this, this.centerX, this.centerY);
     } else {
@@ -359,15 +358,26 @@ export default class SceneMain extends Phaser.Scene {
       thumb: this.add.circle(0, 0, 30, 0xcccccc),
     });
 
-    this.button = this.add
+    // this.button = this.add
+    //   .circle(
+    //     x - canvas.width / 4 + this.cameras.main.scrollX,
+    //     y + canvas.height / 3 + this.cameras.main.scrollY,
+    //     30,
+    //     0x888888,
+    //   )
+    //   .setInteractive()
+    //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.handleButtonClick, this);
+    this.circleButton = this.add
       .circle(
         x - canvas.width / 4 + this.cameras.main.scrollX,
         y + canvas.height / 3 + this.cameras.main.scrollY,
         30,
         0x888888,
-      )
-      .setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.handleButtonClick, this);
+      );
+
+    this.button = this.plugins.get("rexButton").add(this.circleButton, { enable: true, mode: 1, clickInterval: 100 });
+
+    this.button.on("click", this.handleButtonClick, this);
 
     this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStick);
     this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.button);
@@ -392,8 +402,6 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    ball.possession = "";
-
     switch (direction) {
       case "right":
         ball.x = player.x + player.width * 2;
@@ -403,6 +411,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 300);
         break;
       case "rightDown":
@@ -413,6 +429,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "down":
@@ -423,6 +447,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocityY(0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "leftDown":
@@ -433,6 +465,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "left":
@@ -443,6 +483,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "leftUp":
@@ -453,6 +501,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "up":
@@ -463,6 +519,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocityY(0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       case "rightUp":
@@ -473,6 +537,14 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
         break;
       default:
@@ -484,14 +556,16 @@ export default class SceneMain extends Phaser.Scene {
         setTimeout(() => {
           ball.setVelocityY(0);
           ball.stop();
+
+          ball.possession = "";
+
+          socket.emit("moveBall", {
+            x: this.ball.body.x,
+            y: this.ball.body.y,
+            possession: this.ball.body.possession,
+          });
         }, 1000);
     }
-
-    socket.emit("moveBall", {
-      x: ball.x,
-      y: ball.y,
-      possession: this.ball.body.possession,
-    });
   }
 
   setOverlapToBall(player) {
