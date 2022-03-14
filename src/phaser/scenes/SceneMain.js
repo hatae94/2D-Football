@@ -108,6 +108,7 @@ export default class SceneMain extends Phaser.Scene {
       x, y, possession, isShoot,
     }) => {
       this.ball.move();
+      console.log(x, y);
 
       this.ball.body.possession = possession;
       this.ball.body.isShoot = isShoot;
@@ -137,7 +138,16 @@ export default class SceneMain extends Phaser.Scene {
       });
     }
 
-    if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
+    // if (this.ball.body.isShoot) {
+    //   socket.emit("moveBall", {
+    //     x: this.ball.body.x,
+    //     y: this.ball.body.y,
+    //     possession: this.ball.body.possession,
+    //     isShoot: this.ball.body.isShoot,
+    //   });
+    // }
+
+    if ((this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) && this.ball.body.isShoot) {
       socket.emit("moveBall", {
         x: this.ball.body.x,
         y: this.ball.body.y,
