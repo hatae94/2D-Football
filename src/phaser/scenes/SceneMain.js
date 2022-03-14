@@ -408,12 +408,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 300);
         break;
       case "rightDown":
@@ -428,12 +428,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "down":
@@ -448,12 +448,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "leftDown":
@@ -468,12 +468,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "left":
@@ -488,12 +488,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "leftUp":
@@ -508,12 +508,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "up":
@@ -528,12 +528,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       case "rightUp":
@@ -548,12 +548,12 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
         break;
       default:
@@ -569,21 +569,21 @@ export default class SceneMain extends Phaser.Scene {
           ball.possession = "";
           ball.isShoot = false;
 
-          socket.emit("moveBall", {
-            x: this.ball.body.x,
-            y: this.ball.body.y,
-            possession: this.ball.body.possession,
-            isShoot: this.ball.body.isShoot,
-          });
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
         }, 1000);
     }
 
-    socket.emit("moveBall", {
-      x: this.ball.body.x,
-      y: this.ball.body.y,
-      possession: this.ball.body.possession,
-      isShoot: this.ball.body.isShoot,
-    });
+    // socket.emit("moveBall", {
+    //   x: this.ball.body.x,
+    //   y: this.ball.body.y,
+    //   possession: this.ball.body.possession,
+    //   isShoot: this.ball.body.isShoot,
+    // });
   }
 
   setOverlapToBall(player) {
