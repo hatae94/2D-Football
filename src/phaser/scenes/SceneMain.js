@@ -370,15 +370,17 @@ export default class SceneMain extends Phaser.Scene {
       thumb: this.add.circle(0, 0, 30, 0xcccccc),
     });
 
-    this.circleButton = this.add
-      .circle(
-        x - canvas.width / 4 + this.cameras.main.scrollX,
-        y + canvas.height / 3 + this.cameras.main.scrollY,
-        30,
-        0x888888,
-      );
+    this.button = this.input.activePointer;
 
-    this.button = this.plugins.get("rexButton").add(this.circleButton, { enable: true, mode: 1, clickInterval: 100 });
+    // this.circleButton = this.add
+    //   .circle(
+    //     x - canvas.width / 4 + this.cameras.main.scrollX,
+    //     y + canvas.height / 3 + this.cameras.main.scrollY,
+    //     30,
+    //     0x888888,
+    //   );
+
+    // this.button = this.plugins.get("rexButton").add(this.circleButton, { enable: true, mode: 1, clickInterval: 100 });
 
     this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStick);
     this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.button);

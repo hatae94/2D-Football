@@ -43,55 +43,82 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.direction = "right";
         this.body.anims.play(`${this.textureName}-right`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.RIGHT_UP_RANGE.FROM && angle > JOYSTICK.RIGHT_UP_RANGE.TO:
         this.body.direction = "rightUp";
         this.body.anims.play(`${this.textureName}-rightUp`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.UP_RANGE.FROM && angle > JOYSTICK.UP_RANGE.TO:
         this.body.direction = "up";
         this.body.anims.play(`${this.textureName}-up`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.LEFT_UP_RANGE.FROM && angle > JOYSTICK.LEFT_UP_RANGE.TO:
         this.body.direction = "leftUp";
         this.body.anims.play(`${this.textureName}-leftUp`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.LEFT_RANGE.FROM || angle > JOYSTICK.LEFT_RANGE.TO:
         this.body.direction = "left";
         this.body.anims.play(`${this.textureName}-left`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
         button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.LEFT_DOWN_RANGE.FROM && angle > JOYSTICK.LEFT_DOWN_RANGE.TO:
         this.body.direction = "leftDown";
         this.body.anims.play(`${this.textureName}-leftDown`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.DOWN_RANGE.FROM && angle > JOYSTICK.DOWN_RANGE.TO:
         this.body.direction = "down";
         this.body.anims.play(`${this.textureName}-down`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       case angle < JOYSTICK.RIGHT_DOWN_RANGE.FROM && angle > JOYSTICK.RIGHT_DOWN_RANGE.TO:
         this.body.direction = "rightDown";
         this.body.anims.play(`${this.textureName}-rightDown`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
       default:
         this.body.direction = "stand";
         this.body.anims.play(`${this.textureName}-stand`, true);
         this.body.setVelocity(0, 0);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
+        if (button.isDown) {
+          console.log("fuck");
+        }
         break;
     }
   }
