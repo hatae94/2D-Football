@@ -43,7 +43,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.direction = "right";
         this.body.anims.play(`${this.textureName}-right`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, this);
+        button.on("click", scene.handleButtonClick, scene);
         break;
       case angle < JOYSTICK.RIGHT_UP_RANGE.FROM && angle > JOYSTICK.RIGHT_UP_RANGE.TO:
         this.body.direction = "rightUp";
