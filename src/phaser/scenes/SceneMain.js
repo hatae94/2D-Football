@@ -105,11 +105,12 @@ export default class SceneMain extends Phaser.Scene {
     });
 
     socket.on("ballMove", ({
-      x, y, possession,
+      x, y, possession, isShoot,
     }) => {
       this.ball.move();
 
       this.ball.body.possession = possession;
+      this.ball.body.isShoot = isShoot;
 
       this.ball.body.x = x;
       this.ball.body.y = y;
@@ -126,9 +127,9 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
-
     this.button.on("click", this.handleButtonClick, this);
+
+    this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
@@ -137,12 +138,23 @@ export default class SceneMain extends Phaser.Scene {
         anims: this.player.body.anims.currentAnim.key,
       });
     }
+    console.log(this.ball.body.isShoot);
+    // if (this.ball.body.isShoot) {
+    //   console.log(this.ball.body.x, this.ball.body.y);
+    //   socket.emit("moveBall", {
+    //     x: this.ball.body.x,
+    //     y: this.ball.body.y,
+    //     possession: this.ball.body.possession,
+    //     isShoot: this.ball.body.isShoot,
+    //   });
+    // }
 
     if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
       socket.emit("moveBall", {
         x: this.ball.body.x,
         y: this.ball.body.y,
         possession: this.ball.body.possession,
+        isShoot: this.ball.body.isShoot,
       });
     }
   }
@@ -393,6 +405,8 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
+    ball.isShoot = true;
+
     switch (direction) {
       case "right":
         ball.x = player.x + player.width * 2;
@@ -404,11 +418,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 300);
         break;
@@ -422,11 +438,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -440,11 +458,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -458,11 +478,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -476,11 +498,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -494,11 +518,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -512,11 +538,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -530,11 +558,13 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
         break;
@@ -549,20 +579,23 @@ export default class SceneMain extends Phaser.Scene {
           ball.stop();
 
           ball.possession = "";
+          ball.isShoot = false;
 
           socket.emit("moveBall", {
             x: this.ball.body.x,
             y: this.ball.body.y,
             possession: this.ball.body.possession,
+            isShoot: this.ball.body.isShoot,
           });
         }, 1000);
     }
 
-    socket.emit("moveBall", {
-      x: this.ball.body.x,
-      y: this.ball.body.y,
-      possession: this.ball.body.possession,
-    });
+    // socket.emit("moveBall", {
+    //   x: this.ball.body.x,
+    //   y: this.ball.body.y,
+    //   possession: this.ball.body.possession,
+    //   isShoot: this.ball.body.isShoot,
+    // });
   }
 
   setOverlapToBall(player) {
@@ -619,6 +652,15 @@ export default class SceneMain extends Phaser.Scene {
         ball.x = player.x + player.width * 1.2;
         ball.y = player.y + player.height * 1.2;
         this.ball.stop();
+    }
+
+    if (!this.ball.body.isShoot) {
+      socket.emit("moveBall", {
+        x: this.ball.body.x,
+        y: this.ball.body.y,
+        possession: this.ball.body.possession,
+        isShoot: this.ball.body.isShoot,
+      });
     }
   }
 
