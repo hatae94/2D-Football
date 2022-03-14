@@ -128,7 +128,9 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    this.player.handleMovement(this.joyStick.angle, this.joyStick.force, this.button, this);
+    this.player.handleMovement(this.joyStickRight.angle, this.joyStickRight.force);
+
+    this.handleButtonClick(this.joyStickLeft.angle, this.joyStickLeft.force);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
@@ -362,7 +364,9 @@ export default class SceneMain extends Phaser.Scene {
   }
 
   createVirtualController(x, y, canvas) {
-    this.joyStick = this.plugins.get("rexvirtualjoystickplugin").add(this, {
+    this.input.addPointer(1);
+
+    this.joyStickRight = this.plugins.get("rexvirtualjoystickplugin").add(this, {
       x: x + canvas.width / 4,
       y: y + canvas.height / 3,
       radius: 50,
@@ -370,7 +374,13 @@ export default class SceneMain extends Phaser.Scene {
       thumb: this.add.circle(0, 0, 30, 0xcccccc),
     });
 
-    this.button = this.input.activePointer;
+    this.joyStickLeft = this.plugins.get("rexvirtualjoystickplugin").add(this, {
+      x: x - canvas.width / 4 + this.cameras.main.scrollX,
+      y: y + canvas.height / 3 + this.cameras.main.scrollY,
+      radius: 50,
+      base: this.add.circle(0, 0, 70, 0x888888),
+      thumb: this.add.circle(0, 0, 30, 0xcccccc),
+    });
 
     // this.circleButton = this.add
     //   .circle(
@@ -382,33 +392,38 @@ export default class SceneMain extends Phaser.Scene {
 
     // this.button = this.plugins.get("rexButton").add(this.circleButton, { enable: true, mode: 1, clickInterval: 100 });
 
-    this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStick);
-    this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.button);
+    this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStickRight);
+    this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.joyStickLeft);
   }
 
-  handleButtonClick() {
+  handleButtonClick(angle, force) {
     const player = this.player.body;
-    const { direction } = this.player.body;
     const ball = this.ball.body;
+
+    if (!force) {
+      return;
+    }
 
     if (ball.possession !== player.id) {
       this.player.speed = PLAYER_INFO.EXTRA_SPEED;
+      this.joyStickLeft.setEnable(false);
 
       setTimeout(() => {
         this.player.speed = PLAYER_INFO.DONW_SPEED;
 
         setTimeout(() => {
           this.player.speed = PLAYER_INFO.NORMAL_SPEED;
+          this.joyStickLeft.setEnable(true);
         }, 500);
       }, 2000);
 
       return;
     }
-    ball.possession = "button";
+
     ball.isShoot = true;
 
-    switch (direction) {
-      case "right":
+    switch (true) {
+      case force && angle < JOYSTICK.RIGHT_RANGE.FROM && angle > JOYSTICK.RIGHT_RANGE.TO:
         ball.x = player.x + player.width * 2;
         ball.y = player.y + player.height * 1.5;
 
@@ -428,11 +443,11 @@ export default class SceneMain extends Phaser.Scene {
           // });
         }, 300);
         break;
-      case "rightDown":
+      case angle < JOYSTICK.RIGHT_UP_RANGE.FROM && angle > JOYSTICK.RIGHT_UP_RANGE.TO:
         ball.x = player.x + player.width * 2;
         ball.y = player.y + player.height * 1.5;
 
-        ball.setVelocity(BALL_INFO.SPEED, BALL_INFO.SPEED);
+        ball.setVelocity(BALL_INFO.SPEED, -BALL_INFO.SPEED);
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
@@ -448,87 +463,7 @@ export default class SceneMain extends Phaser.Scene {
           // });
         }, 1000);
         break;
-      case "down":
-        ball.x = player.x;
-        ball.y = player.y + player.height * 2;
-
-        ball.setVelocityY(BALL_INFO.SPEED);
-        setTimeout(() => {
-          ball.setVelocityY(0);
-          ball.stop();
-
-          ball.possession = "";
-          ball.isShoot = false;
-
-          // socket.emit("moveBall", {
-          //   x: this.ball.body.x,
-          //   y: this.ball.body.y,
-          //   possession: this.ball.body.possession,
-          //   isShoot: this.ball.body.isShoot,
-          // });
-        }, 1000);
-        break;
-      case "leftDown":
-        ball.x = player.x - player.width * 2;
-        ball.y = player.y + player.height * 1.5;
-
-        ball.setVelocity(-BALL_INFO.SPEED, BALL_INFO.SPEED);
-        setTimeout(() => {
-          ball.setVelocity(0, 0);
-          ball.stop();
-
-          ball.possession = "";
-          ball.isShoot = false;
-
-          // socket.emit("moveBall", {
-          //   x: this.ball.body.x,
-          //   y: this.ball.body.y,
-          //   possession: this.ball.body.possession,
-          //   isShoot: this.ball.body.isShoot,
-          // });
-        }, 1000);
-        break;
-      case "left":
-        ball.x = player.x - player.width * 2;
-        ball.y = player.y + player.height * 1.5;
-
-        ball.setVelocity(-BALL_INFO.SPEED, 0);
-        setTimeout(() => {
-          ball.setVelocity(0, 0);
-          ball.stop();
-
-          ball.possession = "";
-          ball.isShoot = false;
-
-          // socket.emit("moveBall", {
-          //   x: this.ball.body.x,
-          //   y: this.ball.body.y,
-          //   possession: this.ball.body.possession,
-          //   isShoot: this.ball.body.isShoot,
-          // });
-        }, 1000);
-        break;
-      case "leftUp":
-        ball.x = player.x - player.width * 2;
-        ball.y = player.y - player.height * 1.5;
-
-        ball.setVelocity(-BALL_INFO.SPEED, -BALL_INFO.SPEED);
-        setTimeout(() => {
-          ball.setVelocity(0, 0);
-          ball.stop();
-
-          ball.possession = "";
-          ball.isShoot = false;
-
-          // socket.emit("moveBall", {
-          //   x: this.ball.body.x,
-          //   y: this.ball.body.y,
-          //   possession: this.ball.body.possession,
-          //   isShoot: this.ball.body.isShoot,
-          // });
-        }, 1000);
-        break;
-      case "up":
+      case angle < JOYSTICK.UP_RANGE.FROM && angle > JOYSTICK.UP_RANGE.TO:
         ball.x = player.x;
         ball.y = player.y - player.height * 2;
 
@@ -548,11 +483,91 @@ export default class SceneMain extends Phaser.Scene {
           // });
         }, 1000);
         break;
-      case "rightUp":
+      case angle < JOYSTICK.LEFT_UP_RANGE.FROM && angle > JOYSTICK.LEFT_UP_RANGE.TO:
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y - player.height * 1.5;
+
+        ball.setVelocity(-BALL_INFO.SPEED, -BALL_INFO.SPEED);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+
+          ball.possession = "";
+          ball.isShoot = false;
+
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
+        }, 1000);
+        break;
+      case angle < JOYSTICK.LEFT_RANGE.FROM || angle > JOYSTICK.LEFT_RANGE.TO:
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(-BALL_INFO.SPEED, 0);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+
+          ball.possession = "";
+          ball.isShoot = false;
+
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
+        }, 1000);
+        break;
+      case angle < JOYSTICK.LEFT_DOWN_RANGE.FROM && angle > JOYSTICK.LEFT_DOWN_RANGE.TO:
+        ball.x = player.x - player.width * 2;
+        ball.y = player.y + player.height * 1.5;
+
+        ball.setVelocity(-BALL_INFO.SPEED, BALL_INFO.SPEED);
+        setTimeout(() => {
+          ball.setVelocity(0, 0);
+          ball.stop();
+
+          ball.possession = "";
+          ball.isShoot = false;
+
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
+        }, 1000);
+        break;
+      case angle < JOYSTICK.DOWN_RANGE.FROM && angle > JOYSTICK.DOWN_RANGE.TO:
+        ball.x = player.x;
+        ball.y = player.y + player.height * 2;
+
+        ball.setVelocityY(BALL_INFO.SPEED);
+        setTimeout(() => {
+          ball.setVelocityY(0);
+          ball.stop();
+
+          ball.possession = "";
+          ball.isShoot = false;
+
+          // socket.emit("moveBall", {
+          //   x: this.ball.body.x,
+          //   y: this.ball.body.y,
+          //   possession: this.ball.body.possession,
+          //   isShoot: this.ball.body.isShoot,
+          // });
+        }, 1000);
+        break;
+      case angle < JOYSTICK.RIGHT_DOWN_RANGE.FROM && angle > JOYSTICK.RIGHT_DOWN_RANGE.TO:
         ball.x = player.x + player.width * 2;
         ball.y = player.y + player.height * 1.5;
 
-        ball.setVelocity(BALL_INFO.SPEED, -BALL_INFO.SPEED);
+        ball.setVelocity(BALL_INFO.SPEED, BALL_INFO.SPEED);
         setTimeout(() => {
           ball.setVelocity(0, 0);
           ball.stop();
@@ -588,6 +603,7 @@ export default class SceneMain extends Phaser.Scene {
           //   isShoot: this.ball.body.isShoot,
           // });
         }, 1000);
+        break;
     }
 
     // socket.emit("moveBall", {
