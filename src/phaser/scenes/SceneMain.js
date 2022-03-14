@@ -127,7 +127,7 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
+    this.player.handleMovement(this.joyStick.angle, this.joyStick.force, this.button);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
@@ -642,8 +642,6 @@ export default class SceneMain extends Phaser.Scene {
         ball.y = player.y + player.height * 1.2;
         this.ball.stop();
     }
-
-    this.button.on("click", this.handleButtonClick, this);
 
     if (!this.ball.body.isShoot) {
       socket.emit("moveBall", {
