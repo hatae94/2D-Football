@@ -62,9 +62,12 @@ export default function Timer({ seconds }) {
         <GameOverTextBox>
           <div className="gameOverText">게임 종료</div>
           <div className="overStateText">
-            {userScore > otherUserScore && "승리!"}
-            {userScore < otherUserScore && "패배.."}
-            {userScore === otherUserScore && "무승부"}
+            <div>{`${userScore} : ${otherUserScore}`}</div>
+            <div>
+              {userScore > otherUserScore && "승리!"}
+              {userScore < otherUserScore && "패배.."}
+              {userScore === otherUserScore && "무승부"}
+            </div>
           </div>
         </GameOverTextBox>
         <button type="button" onClick={handleBackOnClick}>돌아가기</button>
@@ -94,6 +97,9 @@ const GameOverTextBox = styled.div`
   }
 
   .overStateText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-weight: bold;
   }
 `;

@@ -40,7 +40,7 @@ export default function Game() {
 
   return (
     <>
-      <Modal open={suddenDisconnectedMessage} onClose={() => suddenDisconnectedMessage}>
+      <Modal open={suddenDisconnectedMessage} onClose={() => !suddenDisconnectedMessage}>
         <MessageBox>{suddenDisconnectedMessage}</MessageBox>
         <button type="button" onClick={handleBackOnClick}>홈으로</button>
       </Modal>

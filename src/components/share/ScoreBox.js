@@ -24,10 +24,9 @@ export default function ScoreBox() {
 
 const ScoreBoxWrapper = styled.div`
   position: absolute;
-  top: 4rem;
-  left: 50%;
-  transform: translate(-50%);
-  width: 60%;
+  top: 1rem;
+  right: 1rem;
+  width: 40%;
   height: 2rem;
   display: flex;
   flex-direction: row;
