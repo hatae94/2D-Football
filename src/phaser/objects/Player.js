@@ -79,7 +79,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.direction = "left";
         this.body.anims.play(`${this.textureName}-left`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", scene.handleButtonClick, scene);
+        // button.on("click", scene.handleButtonClick, scene);
         if (button.isDown) {
           console.log("fuck");
         }
