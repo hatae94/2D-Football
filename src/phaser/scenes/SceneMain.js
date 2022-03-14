@@ -128,6 +128,8 @@ export default class SceneMain extends Phaser.Scene {
 
     this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
 
+    this.button.on("click", this.handleButtonClick, this);
+
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
         x: this.player.body.x,
@@ -358,15 +360,6 @@ export default class SceneMain extends Phaser.Scene {
       thumb: this.add.circle(0, 0, 30, 0xcccccc),
     });
 
-    // this.button = this.add
-    //   .circle(
-    //     x - canvas.width / 4 + this.cameras.main.scrollX,
-    //     y + canvas.height / 3 + this.cameras.main.scrollY,
-    //     30,
-    //     0x888888,
-    //   )
-    //   .setInteractive()
-    //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.handleButtonClick, this);
     this.circleButton = this.add
       .circle(
         x - canvas.width / 4 + this.cameras.main.scrollX,
@@ -376,8 +369,6 @@ export default class SceneMain extends Phaser.Scene {
       );
 
     this.button = this.plugins.get("rexButton").add(this.circleButton, { enable: true, mode: 1, clickInterval: 100 });
-
-    this.button.on("click", this.handleButtonClick, this);
 
     this.alignGrid.placeAt(JOYSTICK.POSITION.X, JOYSTICK.POSITION.Y, this.joyStick);
     this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.button);
@@ -566,6 +557,12 @@ export default class SceneMain extends Phaser.Scene {
           });
         }, 1000);
     }
+
+    socket.emit("moveBall", {
+      x: this.ball.body.x,
+      y: this.ball.body.y,
+      possession: this.ball.body.possession,
+    });
   }
 
   setOverlapToBall(player) {
