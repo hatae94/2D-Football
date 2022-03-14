@@ -108,7 +108,7 @@ export default class SceneMain extends Phaser.Scene {
       x, y, possession, isShoot,
     }) => {
       this.ball.move();
-      console.log(x, y);
+      console.log(possession);
 
       this.ball.body.possession = possession;
       this.ball.body.isShoot = isShoot;
@@ -402,7 +402,7 @@ export default class SceneMain extends Phaser.Scene {
 
       return;
     }
-
+    ball.possession = "button";
     ball.isShoot = true;
 
     switch (direction) {
