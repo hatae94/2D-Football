@@ -34,7 +34,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     return Phaser.Math.Distance.BetweenPoints(playerPosition, ballPostion) < 25;
   }
 
-  handleMovement(angle, force, button) {
+  handleMovement(angle, force, button, scene) {
     const uniformVelocityX = this.speed * Math.cos((angle * Math.PI) / 180);
     const uniformVelocityY = this.speed * Math.sin((angle * Math.PI) / 180);
 
@@ -43,7 +43,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.direction = "right";
         this.body.anims.play(`${this.textureName}-right`, true);
         this.body.setVelocity(uniformVelocityX, uniformVelocityY);
-        button.on("click", this.handleButtonClick, this);
+        button.on("click", scene.handleButtonClick, this);
         break;
       case angle < JOYSTICK.RIGHT_UP_RANGE.FROM && angle > JOYSTICK.RIGHT_UP_RANGE.TO:
         this.body.direction = "rightUp";

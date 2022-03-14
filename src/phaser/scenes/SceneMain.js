@@ -127,7 +127,7 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    this.player.handleMovement(this.joyStick.angle, this.joyStick.force, this.button);
+    this.player.handleMovement(this.joyStick.angle, this.joyStick.force, this.button, this);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
