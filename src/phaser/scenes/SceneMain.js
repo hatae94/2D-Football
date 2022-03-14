@@ -127,8 +127,6 @@ export default class SceneMain extends Phaser.Scene {
       return;
     }
 
-    this.button.on("click", this.handleButtonClick, this);
-
     this.player.handleMovement(this.joyStick.angle, this.joyStick.force);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
@@ -138,16 +136,6 @@ export default class SceneMain extends Phaser.Scene {
         anims: this.player.body.anims.currentAnim.key,
       });
     }
-    console.log(this.ball.body.isShoot);
-    // if (this.ball.body.isShoot) {
-    //   console.log(this.ball.body.x, this.ball.body.y);
-    //   socket.emit("moveBall", {
-    //     x: this.ball.body.x,
-    //     y: this.ball.body.y,
-    //     possession: this.ball.body.possession,
-    //     isShoot: this.ball.body.isShoot,
-    //   });
-    // }
 
     if (this.ball.body.x !== this.ballOriginPosition.x || this.ball.body.y !== this.ballOriginPosition.y) {
       socket.emit("moveBall", {
@@ -590,12 +578,12 @@ export default class SceneMain extends Phaser.Scene {
         }, 1000);
     }
 
-    // socket.emit("moveBall", {
-    //   x: this.ball.body.x,
-    //   y: this.ball.body.y,
-    //   possession: this.ball.body.possession,
-    //   isShoot: this.ball.body.isShoot,
-    // });
+    socket.emit("moveBall", {
+      x: this.ball.body.x,
+      y: this.ball.body.y,
+      possession: this.ball.body.possession,
+      isShoot: this.ball.body.isShoot,
+    });
   }
 
   setOverlapToBall(player) {
@@ -619,6 +607,7 @@ export default class SceneMain extends Phaser.Scene {
       case "right":
         ball.x = player.x + player.width * 1.2;
         ball.y = player.y + player.height * 1.2;
+
         break;
       case "rightDown":
         ball.x = player.x + player.width * 1.2;
@@ -653,6 +642,8 @@ export default class SceneMain extends Phaser.Scene {
         ball.y = player.y + player.height * 1.2;
         this.ball.stop();
     }
+
+    this.button.on("click", this.handleButtonClick, this);
 
     if (!this.ball.body.isShoot) {
       socket.emit("moveBall", {
