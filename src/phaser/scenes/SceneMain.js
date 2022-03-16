@@ -677,6 +677,10 @@ export default class SceneMain extends Phaser.Scene {
         return false;
       }
 
+      if (ball.isShoot) {
+        return;
+      }
+
       return player.canHaveBall(ball);
     };
   }
