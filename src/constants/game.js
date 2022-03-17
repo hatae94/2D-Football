@@ -11,7 +11,7 @@ export const BALL_INFO = {
   BODY_SCALE: 3,
   POSITION: { X: 2, Y: 1.5 },
   BOUNCE: { X: 0.2, Y: 0.2 },
-  SPEED: 150,
+  SPEED: 200,
 };
 
 export const TEXT_INFO = {

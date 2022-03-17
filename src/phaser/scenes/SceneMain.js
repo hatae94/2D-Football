@@ -136,7 +136,7 @@ export default class SceneMain extends Phaser.Scene {
 
     this.player.handleMovement(this.joyStickRight.angle, this.joyStickRight.force);
 
-    this.handleButtonClick(this.joyStickLeft.angle, this.joyStickLeft.force, this.joyStickLeft);
+    this.handleDragJoystickLeft(this.joyStickLeft.angle, this.joyStickLeft.force);
 
     if (this.player.body.x !== this.playerOriginPosition.x || this.player.body.y !== this.playerOriginPosition.y) {
       socket.emit("movePlayer", {
@@ -383,7 +383,7 @@ export default class SceneMain extends Phaser.Scene {
     this.alignGrid.placeAt(JOYSTICK.BUTTON_POSITION.X, JOYSTICK.BUTTON_POSITION.Y, this.joyStickLeft);
   }
 
-  handleButtonClick(angle, force, joyStick) {
+  handleDragJoystickLeft(angle, force) {
     const player = this.player.body;
     const ball = this.ball.body;
 
