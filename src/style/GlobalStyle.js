@@ -6,6 +6,7 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         height: 100vh;
+        background-color: #5a8f3c;
       };
 
     li {
