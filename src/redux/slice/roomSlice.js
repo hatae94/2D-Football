@@ -2,7 +2,7 @@ import { createSlice, createAction } from "@reduxjs/toolkit";
 
 const initialState = {
   roomInfo: {
-    time: 120,
+    time: 180,
     isAllReady: false,
     isPaused: false,
     isGameOver: false,
