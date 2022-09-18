@@ -2,7 +2,7 @@
 
 https://2dfootball.online/
 
-2D Football은 일대일 온라인 아케이드 축구 게임입니다.
+2D Football은 온라인 축구 아케이드 게임입니다.
 
 ## 프로젝트 설명
 
